@@ -6,11 +6,10 @@
 
 #include "querrynclude.h"
 
-extern uint8_t pc[1024];
+static uint8_t pc[1024];
 extern struct ibmad_port *srcport;
 extern struct info_s info;
-
-extern uint ibd_timeout = 20;
+extern uint ibd_timeout;
 
 int is_port_info_extended_supported(ib_portid_t * dest, int port, struct ibmad_port *srcport)
 {

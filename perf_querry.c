@@ -4,7 +4,7 @@
 
 #include "querrynclude.h"
 
-uint8_t pc[1024];
+static uint8_t pc[1024];
 uint ibd_timeout = 20;
 struct ibmad_port *srcport;
 struct info_s info;

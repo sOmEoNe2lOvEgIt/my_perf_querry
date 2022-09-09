@@ -97,6 +97,23 @@ static void aggregate_perfcounters(perf_data_t *perf_count)
     aggregate_32bit(&perf_count->xmtwait, val);
 }
 
+
+static void dump_perfcounters(int extended, int timeout, __be16 cap_mask, uint32_t cap_mask2,
+ib_portid_t * portid, int port, int aggregate, perf_data_t *perf_count)
+{
+	char buf[1536];
+
+	memset(pc, 0, sizeof(pc));
+	if (!pma_query_via(pc, portid, port, timeout, IB_GSI_PORT_COUNTERS, srcport)) {
+		printf("perfquery");
+        return;
+    }
+	if (aggregate)
+		aggregate_perfcounters(perf_count);
+	else
+		mad_dump_perfcounters(buf, sizeof buf, pc, sizeof pc);
+}
+
 int main(int ac, char **av)
 {
     perf_data_t *perf_count = NULL;
@@ -114,20 +131,15 @@ int main(int ac, char **av)
         printf("Failed to open '%s' port '%d'\n", ibd_ca, ibd_ca_port);
         return (-1);
     }
-    if (!pma_query_via(pc, &portid, info.port, ibd_timeout, CLASS_PORT_INFO, srcport))
-        return -1;
     if (!smp_query_via(pc, &portid, IB_ATTR_SWITCH_INFO, 0, ibd_timeout, srcport))
         return -1;
+    dump_perfcounters(0, ibd_timeout, mask, 0, &portid, 1, 1, perf_count);
 
     xmt_sl_query(&portid, ibd_ca_port, mask);
     rcv_sl_query(&portid, ibd_ca_port, mask);
     xmt_disc_query(&portid, ibd_ca_port, mask);
     rcv_err_query(&portid, ibd_ca_port, mask);
     
-    perf_count = malloc(sizeof(perf_data_t));
-    if (perf_count == NULL)
-        return (1);
-    aggregate_perfcounters(perf_count);
     printf("port: %u\nsymbolerrors: %u\n",
     perf_count->portselect, perf_count->symbolerrors);
     free (perf_count);

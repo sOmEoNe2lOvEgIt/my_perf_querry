@@ -24,7 +24,7 @@ static int resolve_self(char *ca_name, uint8_t ca_port, ib_portid_t *portid,
 	if (portid) {
 		memset(portid, 0, sizeof(*portid));
 		portid->lid = port.base_lid;
-		portid->sl = port.sm_sl;
+		// portid->sl = port.sm_sl;
 	}
 	if (portnum)
 		*portnum = port.portnum;

@@ -126,7 +126,8 @@ int main(int ac, char **av)
     perf_count = malloc(sizeof(perf_data_t));
     if (ac > 1)
         ibd_ca = av[1];
-    srcport = mad_rpc_open_port(ibd_ca, ibd_ca_port, mgmt_classes, 0);
+    srcport = mad_rpc_open_port(ibd_ca, ibd_ca_port, mgmt_classes, 3);
+    resolve_self(ibd_ca, ibd_ca_port, &portid, &info.port, NULL);
     if (!srcport) {
         printf("Failed to open '%s' port '%d'\n", ibd_ca, ibd_ca_port);
         return (-1);

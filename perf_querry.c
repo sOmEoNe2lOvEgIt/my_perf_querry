@@ -28,13 +28,13 @@ static int resolve_self(char *ca_name, uint8_t ca_port, ib_portid_t *portid,
 	}
 	if (portnum)
 		*portnum = port.portnum;
-	if (gid) {
-		memset(gid, 0, sizeof(*gid));
-		prefix = be64toh(port.gid_prefix);
-		guid = be64toh(port.port_guid);
-		mad_encode_field(*gid, IB_GID_PREFIX_F, &prefix);
-		mad_encode_field(*gid, IB_GID_GUID_F, &guid);
-	}
+	// if (gid) {
+	// 	memset(gid, 0, sizeof(*gid));
+	// 	prefix = be64toh(port.gid_prefix);
+	// 	guid = be64toh(port.port_guid);
+	// 	mad_encode_field(*gid, IB_GID_PREFIX_F, &prefix);
+	// 	mad_encode_field(*gid, IB_GID_GUID_F, &guid);
+	// }
 	umad_release_port(&port);
 	return 0;
 }
@@ -156,7 +156,7 @@ int main(int ac, char **av)
     perf_count = malloc(sizeof(perf_data_t));
     if (ac > 1)
         ibd_ca = av[1];
-    if (resolve_self(ibd_ca, ibd_ca_port, &portid, &info.port, NULL) < 0)
+    if (resolve_self(ibd_ca, ibd_ca_port, &portid, NULL, NULL) < 0)
         return (42);
     srcport = mad_rpc_open_port(ibd_ca, ibd_ca_port, mgmt_classes, 3);
     if (!srcport) {

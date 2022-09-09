@@ -13,26 +13,21 @@ struct info_s info;
 static int resolve_self(char *ca_name, uint8_t ca_port, ib_portid_t *portid,
 		 int *portnum, ibmad_gid_t *gid)
 {
-    printf ("resolve_self");
 	umad_port_t port;
 	uint64_t prefix, guid;
 	int rc;
 
 	if (!(portid || portnum || gid))
 		return (-1);
-    printf("resolve_self2");
 	if ((rc = umad_get_port(ca_name, ca_port, &port)) < 0)
 		return rc;
-    printf("resolve_self3");
 	if (portid) {
 		memset(portid, 0, sizeof(*portid));
 		portid->lid = port.base_lid;
 		portid->sl = port.sm_sl;
 	}
-    printf("resolve_self4");
 	if (portnum)
 		*portnum = port.portnum;
-    printf("resolve_self5");
 	if (gid) {
 		memset(gid, 0, sizeof(*gid));
 		prefix = be64toh(port.gid_prefix);
@@ -40,9 +35,7 @@ static int resolve_self(char *ca_name, uint8_t ca_port, ib_portid_t *portid,
 		mad_encode_field(*gid, IB_GID_PREFIX_F, &prefix);
 		mad_encode_field(*gid, IB_GID_GUID_F, &guid);
 	}
-    printf("resolve_self6");
 	umad_release_port(&port);
-    printf("resolve_self7");
 	return 0;
 }
 
@@ -165,6 +158,7 @@ int main(int ac, char **av)
         ibd_ca = av[1];
     resolve_self(ibd_ca, ibd_ca_port, &portid, &info.port, NULL);
     srcport = mad_rpc_open_port(ibd_ca, ibd_ca_port, mgmt_classes, 3);
+    printf ("srcport opened");
     if (!srcport) {
         printf("Failed to open '%s' port '%d'\n", ibd_ca, ibd_ca_port);
         return (-1);

@@ -121,8 +121,8 @@ int main(int ac, char **av)
     if (perf_count == NULL)
         return (1);
     aggregate_perfcounters(perf_count);
-    printf("port: %u\nsymbolerrors: %u\nportXmitData %u\n",
-    perf_count->portselect, perf_count->symbolerrors, perf_count->xmtdata);
+    printf("port: %u\nsymbolerrors: %u\nportXmitDiscards %u\n",
+    perf_count->portselect, perf_count->symbolerrors, perf_count->xmtdiscards);
     free (perf_count);
     mad_rpc_close_port(srcport);
     return (0);

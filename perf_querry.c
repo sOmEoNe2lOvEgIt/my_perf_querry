@@ -151,8 +151,8 @@ int main(int ac, char **av)
         return (69);
     }
     dump_perfcounters(0, ibd_timeout, mask, 0, &portid, 1, 1, perf_count);
-    printf("port: %u\nsymbolerrors: %u\nPortXmitDiscards: %u\n",
-    perf_count->portselect, perf_count->symbolerrors, perf_count->xmtdiscards);
+    printf("port: %u\nsymbolerrors: %u\nPortXmitDiscards: %u\nPortRcvPkts: %u\n\n",
+    perf_count->portselect, perf_count->symbolerrors, perf_count->xmtdiscards, perf_count->rcvpkts);
     free (perf_count);
     mad_rpc_close_port(srcport);
     return (0);

@@ -119,16 +119,10 @@ int main(int ac, char **av)
     if (!smp_query_via(pc, &portid, info.port, ibd_timeout, CLASS_PORT_INFO, srcport))
         return -1;
 
-    
-    xmt_sl_query(&portid, ibd_ca_port, mask);
-    rcv_sl_query(&portid, ibd_ca_port, mask);
-    xmt_disc_query(&portid, ibd_ca_port, mask);
-    rcv_err_query(&portid, ibd_ca_port, mask);
-    
-    
-    
-    
-    
+    // xmt_sl_query(&portid, ibd_ca_port, mask);
+    // rcv_sl_query(&portid, ibd_ca_port, mask);
+    // xmt_disc_query(&portid, ibd_ca_port, mask);
+    // rcv_err_query(&portid, ibd_ca_port, mask);
     
     perf_count = malloc(sizeof(perf_data_t));
     if (perf_count == NULL)

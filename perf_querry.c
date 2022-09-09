@@ -147,7 +147,7 @@ ib_portid_t * portid, int port, int aggregate, perf_data_t *perf_count)
 int main(int ac, char **av)
 {
     perf_data_t *perf_count = NULL;
-    char *ibd_ca = "mlx5_2";
+    char *ibd_ca = NULL;
     int ibd_ca_port = 1;
     int mgmt_classes[3] = { IB_SMI_CLASS, IB_SA_CLASS, IB_PERFORMANCE_CLASS };
     ib_portid_t portid = { 1 };
@@ -164,7 +164,6 @@ int main(int ac, char **av)
     }
     if (!smp_query_via(pc, &portid, IB_ATTR_SWITCH_INFO, 0, ibd_timeout, srcport))
         return -1;
-    printf ("querry went through\n");
     dump_perfcounters(0, ibd_timeout, mask, 0, &portid, 1, 1, perf_count);
     printf("port: %u\nsymbolerrors: %u\nPortXmitDiscards: %u\n",
     perf_count->portselect, perf_count->symbolerrors, perf_count->xmtdiscards);

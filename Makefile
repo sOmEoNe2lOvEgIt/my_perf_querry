@@ -9,7 +9,7 @@ SRC_FILES = perf_querry.c	  	\
 
 CC	  = gcc
 CFLAGS  ?= -Wall -g -Iinclude -I$(SLURM_INC_DIR) -I$(SLURM_BUILD_DIR) -I$(DEMETER_LIB_DIR)/include -I/usr/include/infiniband/
-LDFLAGS ?= -L$(LIBIBMAD_DIR) -libmad
+LDFLAGS ?= -L$(LIBIBMAD_DIR) -libmad -libumad
 
 all: $(NAME)
 

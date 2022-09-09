@@ -117,7 +117,7 @@ ib_portid_t * portid, int port, int aggregate, perf_data_t *perf_count)
 int main(int ac, char **av)
 {
     perf_data_t *perf_count = NULL;
-    char *ibd_ca = "1959";
+    char *ibd_ca = "mlx5_2";
     int ibd_ca_port = 1;
     int mgmt_classes[3] = { IB_SMI_CLASS, IB_SA_CLASS, IB_PERFORMANCE_CLASS };
     ib_portid_t portid = { 1 };

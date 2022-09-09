@@ -116,7 +116,8 @@ int main(int ac, char **av)
     }
     if (!pma_query_via(pc, &portid, info.port, ibd_timeout, CLASS_PORT_INFO, srcport))
         return -1;
-
+    if (!smp_query_via(pc, &portid, info.port, ibd_timeout, CLASS_PORT_INFO, srcport))
+        return -1;
 
     
     xmt_sl_query(&portid, ibd_ca_port, mask);

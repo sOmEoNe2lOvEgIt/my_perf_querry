@@ -164,7 +164,7 @@ int main(int ac, char **av)
         return (69);
     }
     if (!smp_query_via(pc, &portid, IB_ATTR_SWITCH_INFO, 0, ibd_timeout, srcport))
-        return (911);
+        return (21);
     dump_perfcounters(0, ibd_timeout, mask, 0, &portid, 1, 1, perf_count);
     printf("port: %u\nsymbolerrors: %u\nPortXmitDiscards: %u\n",
     perf_count->portselect, perf_count->symbolerrors, perf_count->xmtdiscards);

@@ -5,7 +5,6 @@ SLURM_BUILD_DIR = /root/rpmbuild/BUILD/slurm-$(SLURM_BUILD)
 NAME = perf_querry
 
 SRC_FILES = perf_querry.c	  	\
-			querry.c			\
 
 CC	  = gcc
 CFLAGS  ?= -Wall -g -Iinclude -I$(SLURM_INC_DIR) -I$(SLURM_BUILD_DIR) -I$(DEMETER_LIB_DIR)/include -I/usr/include/infiniband/

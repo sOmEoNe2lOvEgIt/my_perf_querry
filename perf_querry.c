@@ -14,11 +14,10 @@ static int resolve_self(char *ca_name, uint8_t ca_port, ib_portid_t *portid,
 		 int *portnum, ibmad_gid_t *gid)
 {
 	umad_port_t port;
-	uint64_t prefix, guid;
 	int rc;
 
 	if (!(portid || portnum || gid))
-		return (-1);
+		return (21);
 	if ((rc = umad_get_port(ca_name, ca_port, &port)) < 0)
 		return rc;
 	if (portid) {
@@ -28,15 +27,8 @@ static int resolve_self(char *ca_name, uint8_t ca_port, ib_portid_t *portid,
 	}
 	if (portnum)
 		*portnum = port.portnum;
-	// if (gid) {
-	// 	memset(gid, 0, sizeof(*gid));
-	// 	prefix = be64toh(port.gid_prefix);
-	// 	guid = be64toh(port.port_guid);
-	// 	mad_encode_field(*gid, IB_GID_PREFIX_F, &prefix);
-	// 	mad_encode_field(*gid, IB_GID_GUID_F, &guid);
-	// }
 	umad_release_port(&port);
-	return 0;
+	return (0);
 }
 
 void aggregate_4bit(uint32_t * dest, uint32_t val)
@@ -131,17 +123,12 @@ static void aggregate_perfcounters(perf_data_t *perf_count)
 static void dump_perfcounters(int extended, int timeout, __be16 cap_mask, uint32_t cap_mask2,
 ib_portid_t * portid, int port, int aggregate, perf_data_t *perf_count)
 {
-	char buf[1536];
-
 	memset(pc, 0, sizeof(pc));
 	if (!pma_query_via(pc, portid, port, timeout, IB_GSI_PORT_COUNTERS, srcport)) {
 		printf("perfquery");
         return;
     }
-	if (aggregate)
-		aggregate_perfcounters(perf_count);
-	else
-		mad_dump_perfcounters(buf, sizeof buf, pc, sizeof pc);
+	aggregate_perfcounters(perf_count);
 }
 
 int main(int ac, char **av)
@@ -163,9 +150,6 @@ int main(int ac, char **av)
         printf("Failed to open '%s' port '%d'\n", ibd_ca, ibd_ca_port);
         return (69);
     }
-    printf ("%u\n", portid.lid);
-    // if (!smp_query_via(pc, &portid, IB_ATTR_SWITCH_INFO, 0, ibd_timeout, srcport))
-    //     return (21);
     dump_perfcounters(0, ibd_timeout, mask, 0, &portid, 1, 1, perf_count);
     printf("port: %u\nsymbolerrors: %u\nPortXmitDiscards: %u\n",
     perf_count->portselect, perf_count->symbolerrors, perf_count->xmtdiscards);

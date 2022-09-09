@@ -134,8 +134,8 @@ int main(int ac, char **av)
     if (!smp_query_via(pc, &portid, IB_ATTR_SWITCH_INFO, 0, ibd_timeout, srcport))
         return -1;
     dump_perfcounters(0, ibd_timeout, mask, 0, &portid, 1, 1, perf_count);
-    printf("port: %u\nsymbolerrors: %u\n",
-    perf_count->portselect, perf_count->symbolerrors);
+    printf("port: %u\nsymbolerrors: %u\nPortXmitDiscards: %u\n",
+    perf_count->portselect, perf_count->symbolerrors, perf_count->xmtdiscards);
     free (perf_count);
     mad_rpc_close_port(srcport);
     return (0);

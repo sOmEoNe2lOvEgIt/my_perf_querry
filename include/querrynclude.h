@@ -10,6 +10,24 @@
 
 #define IB_PORT_EXT_RS_FEC2_MODE_ACTIVE (htobe16(0x0004))
 
+typedef struct umad_port {
+	char ca_name[20];
+	int portnum;
+	unsigned base_lid;
+	unsigned lmc;
+	unsigned sm_lid;
+	unsigned sm_sl;
+	unsigned state;
+	unsigned phys_state;
+	unsigned rate;
+	__be32 capmask;
+	__be64	 gid_prefix;
+	__be64	 port_guid;
+	unsigned pkeys_size;
+	uint16_t *pkeys;
+	char link_layer[20];
+} umad_port_t;
+
 struct info_s
 {
     int reset, reset_only, all_ports, loop_ports, port, extended, xmt_sl,

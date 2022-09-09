@@ -9,6 +9,39 @@ uint ibd_timeout = 20;
 struct ibmad_port *srcport;
 struct info_s info;
 
+static int resolve_self(char *ca_name, uint8_t ca_port, ib_portid_t *portid,
+		 int *portnum, ibmad_gid_t *gid)
+{
+	umad_port_t port;
+	uint64_t prefix, guid;
+	int rc;
+
+	if (!(portid || portnum || gid))
+		return (-1);
+
+	if ((rc = umad_get_port(ca_name, ca_port, &port)) < 0)
+		return rc;
+
+	if (portid) {
+		memset(portid, 0, sizeof(*portid));
+		portid->lid = port.base_lid;
+		portid->sl = port.sm_sl;
+	}
+	if (portnum)
+		*portnum = port.portnum;
+	if (gid) {
+		memset(gid, 0, sizeof(*gid));
+		prefix = be64toh(port.gid_prefix);
+		guid = be64toh(port.port_guid);
+		mad_encode_field(*gid, IB_GID_PREFIX_F, &prefix);
+		mad_encode_field(*gid, IB_GID_GUID_F, &guid);
+	}
+
+	umad_release_port(&port);
+
+	return 0;
+}
+
 void aggregate_4bit(uint32_t * dest, uint32_t val)
 {
     if ((((*dest) + val) < (*dest)) || ((*dest) + val) > 0xf)

@@ -158,13 +158,13 @@ int main(int ac, char **av)
         ibd_ca = av[1];
     resolve_self(ibd_ca, ibd_ca_port, &portid, &info.port, NULL);
     srcport = mad_rpc_open_port(ibd_ca, ibd_ca_port, mgmt_classes, 3);
-    printf ("srcport opened");
     if (!srcport) {
         printf("Failed to open '%s' port '%d'\n", ibd_ca, ibd_ca_port);
         return (-1);
     }
     if (!smp_query_via(pc, &portid, IB_ATTR_SWITCH_INFO, 0, ibd_timeout, srcport))
         return -1;
+    printf ("querry went through\n");
     dump_perfcounters(0, ibd_timeout, mask, 0, &portid, 1, 1, perf_count);
     printf("port: %u\nsymbolerrors: %u\nPortXmitDiscards: %u\n",
     perf_count->portselect, perf_count->symbolerrors, perf_count->xmtdiscards);

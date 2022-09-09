@@ -21,6 +21,29 @@ struct info_s
     int ports_count;
 };
 
+typedef struct perf_count {
+    uint32_t portselect;
+    uint32_t counterselect;
+    uint32_t symbolerrors;
+    uint32_t linkrecovers;
+    uint32_t linkdowned;
+    uint32_t rcverrors;
+    uint32_t rcvremotephyerrors;
+    uint32_t rcvswrelayerrors;
+    uint32_t xmtdiscards;
+    uint32_t xmtconstrainterrors;
+    uint32_t rcvconstrainterrors;
+    uint32_t linkintegrityerrors;
+    uint32_t excbufoverrunerrors;
+    uint32_t qp1dropped;
+    uint32_t vl15dropped;
+    uint32_t xmtdata;
+    uint32_t rcvdata;
+    uint32_t xmtpkts;
+    uint32_t rcvpkts;
+    uint32_t xmtwait;
+} perf_data_t;
+
 void xmt_sl_query(ib_portid_t * portid, int port, int mask);
 
 void rcv_sl_query(ib_portid_t * portid, int port, int mask);

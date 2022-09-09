@@ -1,39 +1,12 @@
 #include <stdio.h>
-
 #include <mad.h>
-
 #include <inttypes.h>
 
 #include "querrynclude.h"
 
-
 uint8_t pc[1024];
-
+uint ibd_timeout = 20;
 struct ibmad_port *srcport;
-
-typedef struct perf_count {
-    uint32_t portselect;
-    uint32_t counterselect;
-    uint32_t symbolerrors;
-    uint32_t linkrecovers;
-    uint32_t linkdowned;
-    uint32_t rcverrors;
-    uint32_t rcvremotephyerrors;
-    uint32_t rcvswrelayerrors;
-    uint32_t xmtdiscards;
-    uint32_t xmtconstrainterrors;
-    uint32_t rcvconstrainterrors;
-    uint32_t linkintegrityerrors;
-    uint32_t excbufoverrunerrors;
-    uint32_t qp1dropped;
-    uint32_t vl15dropped;
-    uint32_t xmtdata;
-    uint32_t rcvdata;
-    uint32_t xmtpkts;
-    uint32_t rcvpkts;
-    uint32_t xmtwait;
-} perf_data_t;
-
 struct info_s info;
 
 void aggregate_4bit(uint32_t * dest, uint32_t val)
@@ -141,7 +114,7 @@ int main(int ac, char **av)
         printf("Failed to open '%s' port '%d'\n", ibd_ca, ibd_ca_port);
         return (-1);
     }
-    if (!pma_query_via(pc, &portid, info.port, 1000000000, CLASS_PORT_INFO, srcport))
+    if (!pma_query_via(pc, &portid, info.port, ibd_timeout, CLASS_PORT_INFO, srcport))
         return -1;
     rcv_err_query(&portid, ibd_ca_port, mask);
     perf_count = malloc(sizeof(perf_data_t));

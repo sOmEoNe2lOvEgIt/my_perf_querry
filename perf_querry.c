@@ -116,13 +116,13 @@ int main(int ac, char **av)
     }
     if (!pma_query_via(pc, &portid, info.port, ibd_timeout, CLASS_PORT_INFO, srcport))
         return -1;
-    xmt_disc_query(&portid, ibd_ca_port, mask);
+    vlxmitflowctlerrors_query(&portid, ibd_ca_port, mask);
     perf_count = malloc(sizeof(perf_data_t));
     if (perf_count == NULL)
         return (1);
     aggregate_perfcounters(perf_count);
-    printf("port: %u\nsymbolerrors: %u\nportXmitDiscards %u\n",
-    perf_count->portselect, perf_count->symbolerrors, perf_count->xmtdiscards);
+    printf("port: %u\nsymbolerrors: %u\n",
+    perf_count->portselect, perf_count->symbolerrors);
     free (perf_count);
     mad_rpc_close_port(srcport);
     return (0);

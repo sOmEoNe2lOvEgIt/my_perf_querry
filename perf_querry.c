@@ -116,7 +116,7 @@ int main(int ac, char **av)
     }
     if (!pma_query_via(pc, &portid, info.port, ibd_timeout, CLASS_PORT_INFO, srcport))
         return -1;
-    extended_speeds_query(&portid, ibd_ca_port, mask, 2);
+    vlxmitflowctlerrors_query(&portid, ibd_ca_port, mask);
     perf_count = malloc(sizeof(perf_data_t));
     if (perf_count == NULL)
         return (1);

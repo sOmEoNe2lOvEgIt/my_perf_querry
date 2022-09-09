@@ -119,10 +119,10 @@ int main(int ac, char **av)
     if (!smp_query_via(pc, &portid, IB_ATTR_SWITCH_INFO, 0, 0, srcport))
         return -1;
 
-    // xmt_sl_query(&portid, ibd_ca_port, mask);
-    // rcv_sl_query(&portid, ibd_ca_port, mask);
-    // xmt_disc_query(&portid, ibd_ca_port, mask);
-    // rcv_err_query(&portid, ibd_ca_port, mask);
+    xmt_sl_query(&portid, ibd_ca_port, mask);
+    rcv_sl_query(&portid, ibd_ca_port, mask);
+    xmt_disc_query(&portid, ibd_ca_port, mask);
+    rcv_err_query(&portid, ibd_ca_port, mask);
     
     perf_count = malloc(sizeof(perf_data_t));
     if (perf_count == NULL)

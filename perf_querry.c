@@ -43,6 +43,7 @@ const char *name, uint16_t attr,
 void dump_func(char *, int, void *, int))
 {
 	char buf[1536];
+    int cnt = 0;
  
     memset(pc, 0, sizeof(pc));
     if (!pma_query_via(pc, portid, port_num, ibd_timeout, attr, srcport))
@@ -50,8 +51,9 @@ void dump_func(char *, int, void *, int))
     memset(pc, 0, sizeof(pc));
 
     // dump_func(buf, sizeof(buf), pc, sizeof(pc));
-    _dump_fields(buf, sizeof(buf), pc, IB_PC_EXT_PORT_SELECT_F, IB_PC_EXT_XMT_BYTES_F);
-    printf("%s, %s", buf, buf + strlen(buf) + 2 );
+    cnt = _dump_fields(buf, sizeof(buf), pc, IB_PC_EXT_PORT_SELECT_F, IB_PC_EXT_XMT_BYTES_F);
+    _dump_fields(buf + cnt, sizeof(buf) - cnt, pc, IB_PC_RCV_LOCAL_PHY_ERR_F, IB_PC_RCV_ERR_LAST_F);
+    printf("%s, %s", buf);
     if (reset && !performance_reset_via(pc, portid, info.port, mask, ibd_timeout, attr, srcport))
         printf("cannot reset %s", name);
 }

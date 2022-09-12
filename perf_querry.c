@@ -192,6 +192,7 @@ static void aggregate_ext_perfcounters(perf_data_t *perf_count)
     static u_int32_t val;
 
     mad_decode_field(pc, IB_PC_RCV_LOCAL_PHY_ERR_F, &val);
+    printf("RcvLocalPhyErrors: %u\n", val);
     aggregate_32bit(&perf_count->portlocalphysicalerrors, val);
     mad_decode_field(pc, IB_PC_RCV_MALFORMED_PKT_ERR_F, &val);
     aggregate_32bit(&perf_count->portmalformedpkterrors, val);

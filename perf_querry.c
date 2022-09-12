@@ -11,22 +11,20 @@ struct ibmad_port *srcport;
 struct info_s info;
 
 static void common_func(ib_portid_t * portid, int port_num, int mask,
-unsigned query, unsigned reset, const char *name, uint16_t attr,
+unsigned reset, const char *name, uint16_t attr,
 void dump_func(char *, int, void *, int))
 {
-    char buf[1536];
-
-    if (query) {
-        memset(pc, 0, sizeof(pc));
-        if (!pma_query_via(pc, portid, port_num, ibd_timeout, attr,
-                   srcport))
-            printf("cannot query %s", name);
-        // printf("# %s counters: %s port %d\n%s", name, portid2str(portid), port_num, buf);
-    }
-
+	char buf[1536];
+ 
     memset(pc, 0, sizeof(pc));
-    if (reset && !performance_reset_via(pc, portid, info.port, mask,
-                        ibd_timeout, attr, srcport))
+    if (!pma_query_via(pc, portid, port_num, ibd_timeout, attr, srcport))
+        printf("cannot query %s", name);
+    memset(pc, 0, sizeof(pc));
+
+    // dump_func(buf, sizeof(buf), pc, sizeof(pc));
+    _dump_fields(buf, sizeof(buf), pc, IB_PC_EXT_PORT_SELECT_F,
+			   IB_PC_EXT_XMT_BYTES_F);
+    if (reset && !performance_reset_via(pc, portid, info.port, mask, ibd_timeout, attr, srcport))
         printf("cannot reset %s", name);
 }
 
@@ -179,6 +177,7 @@ int main(int ac, char **av)
     rcv_err_query(&portid, ibd_ca_port, mask);
     // printf("port: %u\nsymbolerrors: %u\nPortXmitDiscards: %u\nPortRcvPkts: %u\n\n",
     // perf_count->portselect, perf_count->symbolerrors, perf_count->xmtdiscards, perf_count->rcvpkts);
+    // printf("this: %u, that: %u\n", perf_count.err)
     mad_rpc_close_port(srcport);
     free (perf_count);
     return (0);

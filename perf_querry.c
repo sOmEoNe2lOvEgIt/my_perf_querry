@@ -80,13 +80,12 @@ static void aggregate_ext_perfcounters(perf_data_t *perf_count, uint8_t pc[])
 // DUMPER
 //______________________________________________________________________________
 
-static void dump_perfcounters(int extended, int timeout, __be16 cap_mask, uint32_t cap_mask2,
-ib_portid_t * portid, int port, int aggregate, perf_data_t *perf_count)
+static void dump_perfcounters(ib_portid_t * portid, int port, perf_data_t *perf_count)
 {
     static uint8_t pc[1024];
 
     memset(pc, 0, sizeof(pc));
-	if (!pma_query_via(pc, portid, port, timeout, IB_GSI_PORT_COUNTERS, srcport)) {
+	if (!pma_query_via(pc, portid, port, ibd_timeout, IB_GSI_PORT_COUNTERS, srcport)) {
 		printf("perfquery");
         return;
     }
@@ -102,13 +101,12 @@ ib_portid_t * portid, int port, int aggregate, perf_data_t *perf_count)
 // RESOLVE SELF
 //______________________________________________________________________________
 
-static int resolve_self(char *ca_name, uint8_t ca_port, ib_portid_t *portid,
-		 int *portnum, ibmad_gid_t *gid)
+static int resolve_self(char *ca_name, uint8_t ca_port, ib_portid_t *portid, int *portnum)
 {
 	umad_port_t port;
 	int rc;
 
-	if (!(portid || portnum || gid))
+	if (!(portid || portnum))
 		return (21);
 	if ((rc = umad_get_port(ca_name, ca_port, &port)) < 0)
 		return rc;
@@ -138,13 +136,13 @@ int main(int ac, char **av)
     perf_count = malloc(sizeof(perf_data_t));
     if (ac > 1)
         ibd_ca = av[1];
-    if (resolve_self(ibd_ca, ibd_ca_port, &portid, &info.port, NULL) < 0)
+    if (resolve_self(ibd_ca, ibd_ca_port, &portid, &info.port) < 0)
         return (42);
     srcport = mad_rpc_open_port(ibd_ca, ibd_ca_port, mgmt_classes, 3);
     if (!srcport)
         return (21);
     perf_count->portlocalphysicalerrors = 3600;
-    dump_perfcounters(0, ibd_timeout, mask, 0, &portid, 1, 1, perf_count);
+    dump_perfcounters(&portid, 1, perf_count);
     mad_rpc_close_port(srcport);
     free (perf_count);
     return (0);

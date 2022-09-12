@@ -85,14 +85,14 @@ static void dump_perfcounters(ib_portid_t * portid, int port, perf_data_t *perf_
     static uint8_t pc[1024];
 
     memset(pc, 0, sizeof(pc));
-	if (!pma_query_via(pc, portid, port, ibd_timeout, IB_GSI_PORT_COUNTERS, srcport)) {
-		printf("perfquery");
+    if (!pma_query_via(pc, portid, port, ibd_timeout, IB_GSI_PORT_COUNTERS, srcport)) {
+        printf("perfquery");
         return;
     }
-	aggregate_perfcounters(perf_count, pc);
+    aggregate_perfcounters(perf_count, pc);
     memset(pc, 0, sizeof(pc));
     if (!pma_query_via(pc, portid, port, ibd_timeout, IB_GSI_PORT_RCV_ERROR_DETAILS, srcport)){
-		printf("extperfquery");
+        printf("extperfquery");
         return;
     }
     aggregate_ext_perfcounters(perf_count, pc);
@@ -103,22 +103,22 @@ static void dump_perfcounters(ib_portid_t * portid, int port, perf_data_t *perf_
 
 static int resolve_self(char *ca_name, uint8_t ca_port, ib_portid_t *portid, int *portnum)
 {
-	umad_port_t port;
-	int rc;
+    umad_port_t port;
+    int rc;
 
-	if (!(portid || portnum))
-		return (21);
-	if ((rc = umad_get_port(ca_name, ca_port, &port)) < 0)
-		return rc;
-	if (portid) {
-		memset(portid, 0, sizeof(*portid));
-		portid->lid = port.base_lid;
-		portid->sl = port.sm_sl;
-	}
-	if (portnum)
-		*portnum = port.portnum;
-	umad_release_port(&port);
-	return (0);
+    if (!(portid || portnum))
+        return (21);
+    if ((rc = umad_get_port(ca_name, ca_port, &port)) < 0)
+        return rc;
+    if (portid) {
+        memset(portid, 0, sizeof(*portid));
+        portid->lid = port.base_lid;
+        portid->sl = port.sm_sl;
+    }
+    if (portnum)
+        *portnum = port.portnum;
+    umad_release_port(&port);
+    return (0);
 }
 
 // MAIN

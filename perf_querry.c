@@ -146,6 +146,7 @@ static void aggregate_perfcounters(perf_data_t *perf_count)
 {
     static uint32_t val;
 
+    mad_decode_field(pc, IB_PC_EXT_PORT_SELECT_F, &val);
     perf_count->portselect = val;
     mad_decode_field(pc, IB_PC_COUNTER_SELECT_F, &val);
     perf_count->counterselect = val;

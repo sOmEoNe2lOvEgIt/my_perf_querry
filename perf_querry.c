@@ -15,7 +15,6 @@ struct info_s info;
 // ERR_QUERRY
 //______________________________________________________________________________
 
-
 static int _dump_fields(char *buf, int bufsz, void *data, int start, int end)
 {
 	char val[64];
@@ -51,7 +50,8 @@ static char *rcv_err_query(ib_portid_t * portid, int port, int mask)
 		return (NULL);
     _dump_fields(buf + cnt, sizeof(buf) - cnt, pc, IB_PC_RCV_LOCAL_PHY_ERR_F, IB_PC_RCV_ERR_LAST_F);
     printf("%s", buf);
-    if ((info.reset_only || info.reset) && !performance_reset_via(pc, portid, info.port, mask, ibd_timeout, IB_GSI_PORT_RCV_ERROR_DETAILS, srcport))
+    if ((info.reset_only || info.reset) &&
+    !performance_reset_via(pc, portid, info.port, mask, ibd_timeout, IB_GSI_PORT_RCV_ERROR_DETAILS, srcport))
         return (NULL);
     return (strdup(buf));
 }
@@ -65,10 +65,10 @@ static void get_err_query(perf_data_t *perf_count, ib_portid_t * portid, int por
         printf("Error: rcv_err_query failed");
         return;
     }
-
+    
+    if (buf != NULL)
+        free(buf);
 }
-
-
 
 // AGGREGATE TOOLS
 //______________________________________________________________________________

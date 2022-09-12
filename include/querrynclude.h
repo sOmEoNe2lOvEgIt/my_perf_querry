@@ -42,6 +42,12 @@ typedef struct perf_count {
     uint32_t xmtpkts;
     uint32_t rcvpkts;
     uint32_t xmtwait;
+    uint32_t portlocalphysicalerrors;
+    uint32_t portmalformedpkterrors;
+    uint32_t portbufferoverrunerrors;
+    uint32_t portdlidmappingerrors;
+    uint32_t portvlmappingerrors;
+    uint32_t portloopingerrors;
 } perf_data_t; // THAT WILL BE THE RETURN VALUE OF GATHERING FUNCTION PAIRED WHITH THE EXT DATA STRUCT. 
 
 #endif /* __PERFQUERY_H__ */

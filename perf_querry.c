@@ -10,8 +10,36 @@ uint ibd_timeout = 20;
 struct ibmad_port *srcport;
 struct info_s info;
 
+static int _dump_fields(char *buf, int bufsz, void *data, int start, int end)
+{
+	char val[64];
+	char *s = buf;
+	int n, field;
+
+	for (field = start; field < end && bufsz > 0; field++) {
+		mad_decode_field(data, field, val);
+		if (!mad_dump_field(field, s, bufsz-1, val))
+			return -1;
+		n = strlen(s);
+		s += n;
+		*s++ = '\n';
+		*s = 0;
+		n++;
+		bufsz -= n;
+	}
+
+	return (int)(s - buf);
+}
+
+void mad_dump_fields(char *buf, int bufsz, void *val, int valsz, int start,
+		     int end)
+{
+	_dump_fields(buf, bufsz, val, start, end);
+}
+
 static void common_func(ib_portid_t * portid, int port_num, int mask,
-unsigned reset, const char *name, uint16_t attr,
+unsigned query, unsigned reset,
+const char *name, uint16_t attr,
 void dump_func(char *, int, void *, int))
 {
 	char buf[1536];

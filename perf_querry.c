@@ -187,7 +187,7 @@ static void aggregate_perfcounters(perf_data_t *perf_count)
     aggregate_32bit(&perf_count->xmtwait, val);
 }
 
-static void aggregate_ext_perfcounters(perf_count)
+static void aggregate_ext_perfcounters(perf_data_t *perf_count)
 {
     static u_int32_t val;
 

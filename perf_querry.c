@@ -131,7 +131,6 @@ int main(int ac, char **av)
     int ibd_ca_port = 1;
     int mgmt_classes[3] = { IB_SMI_CLASS, IB_SA_CLASS, IB_PERFORMANCE_CLASS };
     ib_portid_t portid;
-    int mask = 0xffff;
 
     perf_count = malloc(sizeof(perf_data_t));
     if (ac > 1)

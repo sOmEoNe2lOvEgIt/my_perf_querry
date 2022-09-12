@@ -264,7 +264,7 @@ int main(int ac, char **av)
     dump_perfcounters(0, ibd_timeout, mask, 0, &portid, 1, 1, perf_count);
     // get_err_query(perf_count ,&portid, ibd_ca_port, mask);
     mad_rpc_close_port(srcport);
-    printf("portlocalphysicalerrors: %lu\n", perf_count->portlocalphysicalerrors);
+    printf("portlocalphysicalerrors: %u\n", perf_count->portlocalphysicalerrors);
     free (perf_count);
     return (0);
 }

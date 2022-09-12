@@ -51,7 +51,7 @@ void dump_func(char *, int, void *, int))
 
     // dump_func(buf, sizeof(buf), pc, sizeof(pc));
     _dump_fields(buf, sizeof(buf), pc, IB_PC_EXT_PORT_SELECT_F, IB_PC_EXT_XMT_BYTES_F);
-    printf("%s", buf);
+    printf("%s, %s", buf, buf + strlen(buf) + 1 );
     if (reset && !performance_reset_via(pc, portid, info.port, mask, ibd_timeout, attr, srcport))
         printf("cannot reset %s", name);
 }

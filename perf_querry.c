@@ -254,6 +254,7 @@ int main(int ac, char **av)
     int mask = 0xffff;
 
     perf_count = malloc(sizeof(perf_data_t));
+    perf_count->portlocalphysicalerrors = 3600;
     if (ac > 1)
         ibd_ca = av[1];
     if (resolve_self(ibd_ca, ibd_ca_port, &portid, &info.port, NULL) < 0)

@@ -10,6 +10,11 @@ uint ibd_timeout = 20;
 struct ibmad_port *srcport;
 struct info_s info;
 
+
+// ERR_QUERRY
+//______________________________________________________________________________
+
+
 static int _dump_fields(char *buf, int bufsz, void *data, int start, int end)
 {
 	char val[64];
@@ -18,7 +23,7 @@ static int _dump_fields(char *buf, int bufsz, void *data, int start, int end)
 
 	for (field = start; field < end && bufsz > 0; field++) {
 		mad_decode_field(data, field, val);
-		if (!mad_dump_field(field, s, bufsz-1, val))
+		if (!_dump_fields(field, s, bufsz-1, val, end))
 			return -1;
 		n = strlen(s);
 		s += n;
@@ -27,67 +32,45 @@ static int _dump_fields(char *buf, int bufsz, void *data, int start, int end)
 		n++;
 		bufsz -= n;
 	}
-
 	return (int)(s - buf);
 }
 
-void mad_dump_fields(char *buf, int bufsz, void *val, int valsz, int start,
-		     int end)
+static char *rcv_err_query(ib_portid_t * portid, int port, int mask)
 {
-	_dump_fields(buf, bufsz, val, start, end);
-}
-
-static void common_func(ib_portid_t * portid, int port_num, int mask,
-unsigned query, unsigned reset,
-const char *name, uint16_t attr,
-void dump_func(char *, int, void *, int))
-{
-	char buf[1536];
+    char *buf = malloc (sizeof(char)*1536);
     int cnt = 0;
  
     memset(pc, 0, sizeof(pc));
-    if (!pma_query_via(pc, portid, port_num, ibd_timeout, attr, srcport))
-        printf("cannot query %s", name);
+    if (!pma_query_via(pc, portid, port, ibd_timeout, IB_GSI_PORT_RCV_ERROR_DETAILS, srcport))
+        return (NULL);
     memset(pc, 0, sizeof(pc));
-
-    // dump_func(buf, sizeof(buf), pc, sizeof(pc));
+    mad_dump_perfcounters_rcv_err(buf, sizeof(buf), pc, sizeof(pc));
     cnt = _dump_fields(buf, sizeof(buf), pc, IB_PC_EXT_PORT_SELECT_F, IB_PC_EXT_XMT_BYTES_F);
     if (cnt < 0)
-		return;
+		return (NULL);
     _dump_fields(buf + cnt, sizeof(buf) - cnt, pc, IB_PC_RCV_LOCAL_PHY_ERR_F, IB_PC_RCV_ERR_LAST_F);
     printf("%s", buf);
-    if (reset && !performance_reset_via(pc, portid, info.port, mask, ibd_timeout, attr, srcport))
-        printf("cannot reset %s", name);
+    if ((info.reset_only || info.reset) && !performance_reset_via(pc, portid, info.port, mask, ibd_timeout, IB_GSI_PORT_RCV_ERROR_DETAILS, srcport))
+        return (NULL);
+    return (buf);
 }
 
-static void rcv_err_query(ib_portid_t * portid, int port, int mask)
+static void get_err_query(perf_data_t *perf_count, ib_portid_t * portid, int port, int mask)
 {
-    common_func(portid, port, mask, !info.reset_only,
-            (info.reset_only || info.reset), "PortRcvErrorDetails",
-            IB_GSI_PORT_RCV_ERROR_DETAILS,
-            mad_dump_perfcounters_rcv_err);
+    char *buf = NULL;
+ 
+    buf = rcv_err_query(portid, port, mask);
+    if (buf == NULL) {
+        printf("Error: rcv_err_query failed");
+        return;
+    }
+
 }
 
-static int resolve_self(char *ca_name, uint8_t ca_port, ib_portid_t *portid,
-		 int *portnum, ibmad_gid_t *gid)
-{
-	umad_port_t port;
-	int rc;
 
-	if (!(portid || portnum || gid))
-		return (21);
-	if ((rc = umad_get_port(ca_name, ca_port, &port)) < 0)
-		return rc;
-	if (portid) {
-		memset(portid, 0, sizeof(*portid));
-		portid->lid = port.base_lid;
-		portid->sl = port.sm_sl;
-	}
-	if (portnum)
-		*portnum = port.portnum;
-	umad_release_port(&port);
-	return (0);
-}
+
+// AGGREGATE TOOLS
+//______________________________________________________________________________
 
 static void aggregate_4bit(uint32_t * dest, uint32_t val)
 {
@@ -123,13 +106,16 @@ static void aggregate_32bit(uint32_t * dest, uint32_t val)
         (*dest) = (*dest) + val;
 }
 
-static void aggregate_64bit(uint64_t * dest, uint64_t val)
-{
-    if (((*dest) + val) < (*dest))
-        (*dest) = 0xffffffffffffffffULL;
-    else
-        (*dest) = (*dest) + val;
-}
+// static void aggregate_64bit(uint64_t * dest, uint64_t val)
+// {
+//     if (((*dest) + val) < (*dest))
+//         (*dest) = 0xffffffffffffffffULL;
+//     else
+//         (*dest) = (*dest) + val;
+// }
+
+// MAIN AGGREGATOR
+//______________________________________________________________________________
 
 static void aggregate_perfcounters(perf_data_t *perf_count)
 {
@@ -177,6 +163,9 @@ static void aggregate_perfcounters(perf_data_t *perf_count)
     aggregate_32bit(&perf_count->xmtwait, val);
 }
 
+// DUMPER
+//______________________________________________________________________________
+
 static void dump_perfcounters(int extended, int timeout, __be16 cap_mask, uint32_t cap_mask2,
 ib_portid_t * portid, int port, int aggregate, perf_data_t *perf_count)
 {
@@ -187,6 +176,33 @@ ib_portid_t * portid, int port, int aggregate, perf_data_t *perf_count)
     }
 	aggregate_perfcounters(perf_count);
 }
+
+// RESOLVE SELF
+//______________________________________________________________________________
+
+static int resolve_self(char *ca_name, uint8_t ca_port, ib_portid_t *portid,
+		 int *portnum, ibmad_gid_t *gid)
+{
+	umad_port_t port;
+	int rc;
+
+	if (!(portid || portnum || gid))
+		return (21);
+	if ((rc = umad_get_port(ca_name, ca_port, &port)) < 0)
+		return rc;
+	if (portid) {
+		memset(portid, 0, sizeof(*portid));
+		portid->lid = port.base_lid;
+		portid->sl = port.sm_sl;
+	}
+	if (portnum)
+		*portnum = port.portnum;
+	umad_release_port(&port);
+	return (0);
+}
+
+// MAIN
+//______________________________________________________________________________
 
 int main(int ac, char **av)
 {

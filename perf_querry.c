@@ -77,14 +77,13 @@ static void get_err_query(perf_data_t *perf_count, ib_portid_t * portid, int por
         for (; tmp[0] == '.' && tmp[0] != 0; tmp++);
         perf_count->portlocalphysicalerrors = strtoul(tmp, NULL, 10);
         printf("got PortLocalPhysicalErrors\n");
-        printf(tmp);
-        tmp = strstr(tmp, "PortMalformedPktsErrors");
+        tmp = strstr(tmp, "PortMalformedPktErrors");
         if (tmp == NULL)
             return (print_err());
         tmp += 25;
         for (; tmp[0] == '.' && tmp[0] != 0; tmp++);
         perf_count->portmalformedpkterrors = strtoul(tmp, NULL, 10);
-        printf("got PortMalformedPktsErrors\n");
+        printf("got PortMalformedPktErrors\n");
         tmp = strstr(tmp, "PortBufferOverrunErrors");
         if (tmp == NULL)
             return (print_err());

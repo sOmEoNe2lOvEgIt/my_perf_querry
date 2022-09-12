@@ -222,7 +222,7 @@ int main(int ac, char **av)
     if (!srcport)
         return (21);
     dump_perfcounters(0, ibd_timeout, mask, 0, &portid, 1, 1, perf_count);
-    rcv_err_query(&portid, ibd_ca_port, mask);
+    get_err_query(perf_count ,&portid, ibd_ca_port, mask);
     // printf("port: %u\nsymbolerrors: %u\nPortXmitDiscards: %u\nPortRcvPkts: %u\n\n",
     // perf_count->portselect, perf_count->symbolerrors, perf_count->xmtdiscards, perf_count->rcvpkts);
     // printf("this: %u, that: %u\n", perf_count.err)

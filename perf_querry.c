@@ -155,6 +155,7 @@ static void get_err_query(perf_data_t *perf_count, ib_portid_t * portid, int por
     mad_decode_field(pc, IB_PC_RCV_LOOPING_ERR_F, &val);
     aggregate_32bit(&perf_count->portloopingerrors, val);
 
+    printf("querried\n");
     if ((info.reset_only || info.reset) &&
     !performance_reset_via(pc, portid, info.port, mask, ibd_timeout, IB_GSI_PORT_RCV_ERROR_DETAILS, srcport))
         return;

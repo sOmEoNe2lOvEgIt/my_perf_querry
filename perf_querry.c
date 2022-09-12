@@ -67,8 +67,8 @@ static void get_err_query(perf_data_t *perf_count, ib_portid_t * portid, int por
     char *tmp = NULL;
  
     buf = rcv_err_query(portid, port, mask);
-    if (buf == NULL)
-        return (print_err());
+    // if (buf == NULL)
+    //     return (print_err());
     printf("searching PortLocalPhysicalErrors");
     tmp = strstr(tmp, "PortLocalPhysicalErrors:");
     printf("found PortLocalPhysicalErrors");

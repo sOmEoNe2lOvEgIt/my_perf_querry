@@ -68,9 +68,9 @@ static void get_err_query(perf_data_t *perf_count, ib_portid_t * portid, int por
     buf = rcv_err_query(portid, port, mask);
     if (buf == NULL)
         return (print_err());
-    printf("%s", buf);
+    tmp = strstr(tmp, "PortLocalPhysicalErrors:");
     while (tmp[0] != '\0') {
-        tmp = strstr(tmp, "PortLocalPhysicalErrors:");
+        // tmp = strstr(tmp, "PortLocalPhysicalErrors:");
         if (tmp == NULL)
             return (print_err());
         tmp += 25;

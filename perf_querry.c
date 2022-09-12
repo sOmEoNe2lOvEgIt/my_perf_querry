@@ -2,6 +2,7 @@
 #include <mad.h>
 #include <umad.h>
 #include <inttypes.h>
+#include <string.h>
 
 #include "querrynclude.h"
 
@@ -37,7 +38,7 @@ static int _dump_fields(char *buf, int bufsz, void *data, int start, int end)
 
 static char *rcv_err_query(ib_portid_t * portid, int port, int mask)
 {
-    char *buf = malloc (sizeof(char)*1536);
+    char buf[1536];
     int cnt = 0;
  
     memset(pc, 0, sizeof(pc));
@@ -52,7 +53,7 @@ static char *rcv_err_query(ib_portid_t * portid, int port, int mask)
     printf("%s", buf);
     if ((info.reset_only || info.reset) && !performance_reset_via(pc, portid, info.port, mask, ibd_timeout, IB_GSI_PORT_RCV_ERROR_DETAILS, srcport))
         return (NULL);
-    return (buf);
+    return (strdup(buf));
 }
 
 static void get_err_query(perf_data_t *perf_count, ib_portid_t * portid, int port, int mask)

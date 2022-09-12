@@ -21,11 +21,7 @@ void dump_func(char *, int, void *, int))
         if (!pma_query_via(pc, portid, port_num, ibd_timeout, attr,
                    srcport))
             printf("cannot query %s", name);
-
-        // dump_func(buf, sizeof(buf), pc, sizeof(pc));
-
-        printf("# %s counters: %s port %d\n%s", name,
-               portid2str(portid), port_num, buf);
+        // printf("# %s counters: %s port %d\n%s", name, portid2str(portid), port_num, buf);
     }
 
     memset(pc, 0, sizeof(pc));

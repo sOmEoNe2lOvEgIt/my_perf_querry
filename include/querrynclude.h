@@ -44,42 +44,4 @@ typedef struct perf_count {
     uint32_t xmtwait;
 } perf_data_t; // THAT WILL BE THE RETURN VALUE OF GATHERING FUNCTION PAIRED WHITH THE EXT DATA STRUCT. 
 
-
-// USELESS FOR NOW
-//_______________________________________________________________________________________________________________________
-
-// void xmt_sl_query(ib_portid_t * portid, int port, int mask);
-
-// void rcv_sl_query(ib_portid_t * portid, int port, int mask);
-
-// void xmt_disc_query(ib_portid_t * portid, int port, int mask);
-
-// void rcv_err_query(ib_portid_t * portid, int port, int mask);
-
-// void extended_speeds_query(ib_portid_t * portid, int port, uint64_t ext_mask, __be16 cap_mask);
-
-// void oprcvcounters_query(ib_portid_t * portid, int port, int mask);
-
-// void flowctlcounters_query(ib_portid_t * portid, int port, int mask);
-
-// void vloppackets_query(ib_portid_t * portid, int port, int mask);
-
-// void vlopdata_query(ib_portid_t * portid, int port, int mask);
-
-// void vlxmitflowctlerrors_query(ib_portid_t * portid, int port, int mask);
-
-// void vlxmitcounters_query(ib_portid_t * portid, int port, int mask);
-
-// void swportvlcong_query(ib_portid_t * portid, int port, int mask);
-
-// void rcvcc_query(ib_portid_t * portid, int port, int mask);
-
-// void slrcvfecn_query(ib_portid_t * portid, int port, int mask);
-
-// void slrcvbecn_query(ib_portid_t * portid, int port, int mask);
-
-// void xmitcc_query(ib_portid_t * portid, int port, int mask);
-
-// void vlxmittimecc_query(ib_portid_t * portid, int port, int mask);
-
 #endif /* __PERFQUERY_H__ */

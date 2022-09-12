@@ -151,14 +151,6 @@ static void aggregate_perfcounters(perf_data_t *perf_count)
     aggregate_32bit(&perf_count->xmtwait, val);
 }
 
-static void rcv_err_query(ib_portid_t * portid, int port, int mask)
-{
-	common_func(portid, port, mask, !info.reset_only,
-		    (info.reset_only || info.reset), "PortRcvErrorDetails",
-		    IB_GSI_PORT_RCV_ERROR_DETAILS,
-		    mad_dump_perfcounters_rcv_err);
-}
-
 static void dump_perfcounters(int extended, int timeout, __be16 cap_mask, uint32_t cap_mask2,
 ib_portid_t * portid, int port, int aggregate, perf_data_t *perf_count)
 {

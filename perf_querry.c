@@ -73,37 +73,42 @@ static void get_err_query(perf_data_t *perf_count, ib_portid_t * portid, int por
         tmp = strstr(tmp, "PortLocalPhysicalErrors");
         if (tmp == NULL)
             return (print_err());
-        printf("got PortLocalPhysicalErrors");
+        printf("got PortLocalPhysicalErrors\n");
         tmp += 25;
         for (; tmp[0] == '.'; tmp++);
         perf_count->portlocalphysicalerrors = strtoul(tmp, NULL, 10);
         tmp = strstr(tmp, "PortMalformedPktsErrors");
         if (tmp == NULL)
             return (print_err());
+        printf("got PortMalformedPktsErrors\n");
         tmp += 25;
         for (; tmp[0] == '.'; tmp++);
         perf_count->portmalformedpkterrors = strtoul(tmp, NULL, 10);
         tmp = strstr(tmp, "PortBufferOverrunErrors");
         if (tmp == NULL)
             return (print_err());
+        printf("got PortBufferOverrunErrors\n");
         tmp += 25;
         for (; tmp[0] == '.'; tmp++);
         perf_count->portbufferoverrunerrors = strtoul(tmp, NULL, 10);
         tmp = strstr(tmp, "PortDLIDMappingErrors");
         if (tmp == NULL)
             return (print_err());
+        printf("got PortDLIDMappingErrors\n");
         tmp += 23;
         for (; tmp[0] == '.'; tmp++);
         perf_count->portdlidmappingerrors = strtoul(tmp, NULL, 10);
         tmp = strstr(tmp, "PortVLMappingErrors");
         if (tmp == NULL)
             return (print_err());
+        printf("got PortVLMappingErrors\n");
         tmp += 21;
         for (; tmp[0] == '.'; tmp++);
         perf_count->portvlmappingerrors = strtoul(tmp, NULL, 10);
         tmp = strstr(tmp, "PortLoopingErrors");
         if (tmp == NULL)
             return (print_err());
+        printf("got PortLoopingErrors\n");
         tmp += 19;
         for (; tmp[0] == '.'; tmp++);
         perf_count->portloopingerrors = strtoul(tmp, NULL, 10);

@@ -6,7 +6,6 @@
 
 #include "querrynclude.h"
 
-static uint8_t pc[1024];
 uint ibd_timeout = 20;
 struct ibmad_port *srcport;
 struct info_s info;
@@ -14,7 +13,7 @@ struct info_s info;
 // MAIN AGGREGATOR
 //______________________________________________________________________________
 
-static void aggregate_perfcounters(perf_data_t *perf_count)
+static void aggregate_perfcounters(perf_data_t *perf_count, uint8_t pc[])
 {
     static uint32_t val;
 
@@ -60,7 +59,7 @@ static void aggregate_perfcounters(perf_data_t *perf_count)
     perf_count->xmtwait = val;
 }
 
-static void aggregate_ext_perfcounters(perf_data_t *perf_count)
+static void aggregate_ext_perfcounters(perf_data_t *perf_count, uint8_t pc[])
 {
     static u_int32_t val;
 
@@ -84,18 +83,20 @@ static void aggregate_ext_perfcounters(perf_data_t *perf_count)
 static void dump_perfcounters(int extended, int timeout, __be16 cap_mask, uint32_t cap_mask2,
 ib_portid_t * portid, int port, int aggregate, perf_data_t *perf_count)
 {
-	memset(pc, 0, sizeof(pc));
+    static uint8_t pc[1024];
+
+    memset(pc, 0, sizeof(pc));
 	if (!pma_query_via(pc, portid, port, timeout, IB_GSI_PORT_COUNTERS, srcport)) {
 		printf("perfquery");
         return;
     }
-	aggregate_perfcounters(perf_count);
+	aggregate_perfcounters(perf_count, pc);
     memset(pc, 0, sizeof(pc));
     if (!pma_query_via(pc, portid, port, ibd_timeout, IB_GSI_PORT_RCV_ERROR_DETAILS, srcport)){
 		printf("extperfquery");
         return;
     }
-    aggregate_ext_perfcounters(perf_count);
+    aggregate_ext_perfcounters(perf_count, pc);
 }
 
 // RESOLVE SELF
@@ -145,7 +146,6 @@ int main(int ac, char **av)
     perf_count->portlocalphysicalerrors = 3600;
     dump_perfcounters(0, ibd_timeout, mask, 0, &portid, 1, 1, perf_count);
     mad_rpc_close_port(srcport);
-    printf("port: %u\nportlocalphysicalerrors: %u\n",perf_count->portselect , perf_count->portlocalphysicalerrors);
     free (perf_count);
     return (0);
 }

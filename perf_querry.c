@@ -11,6 +11,42 @@ uint ibd_timeout = 20;
 struct ibmad_port *srcport;
 struct info_s info;
 
+// AGGREGATE TOOLS
+//______________________________________________________________________________
+
+static void aggregate_4bit(uint32_t * dest, uint32_t val)
+{
+    if ((((*dest) + val) < (*dest)) || ((*dest) + val) > 0xf)
+        (*dest) = 0xf;
+    else
+        (*dest) = (*dest) + val;
+}
+
+static void aggregate_8bit(uint32_t * dest, uint32_t val)
+{
+    if ((((*dest) + val) < (*dest))
+        || ((*dest) + val) > 0xff)
+        (*dest) = 0xff;
+    else
+        (*dest) = (*dest) + val;
+}
+
+static void aggregate_16bit(uint32_t * dest, uint32_t val)
+{
+    if ((((*dest) + val) < (*dest))
+        || ((*dest) + val) > 0xffff)
+        (*dest) = 0xffff;
+    else
+        (*dest) = (*dest) + val;
+}
+
+static void aggregate_32bit(uint32_t * dest, uint32_t val)
+{
+    if (((*dest) + val) < (*dest))
+        (*dest) = 0xffffffff;
+    else
+        (*dest) = (*dest) + val;
+}
 
 // ERR_QUERRY
 //______________________________________________________________________________
@@ -122,43 +158,6 @@ static void get_err_query(perf_data_t *perf_count, ib_portid_t * portid, int por
     if ((info.reset_only || info.reset) &&
     !performance_reset_via(pc, portid, info.port, mask, ibd_timeout, IB_GSI_PORT_RCV_ERROR_DETAILS, srcport))
         return;
-}
-
-// AGGREGATE TOOLS
-//______________________________________________________________________________
-
-static void aggregate_4bit(uint32_t * dest, uint32_t val)
-{
-    if ((((*dest) + val) < (*dest)) || ((*dest) + val) > 0xf)
-        (*dest) = 0xf;
-    else
-        (*dest) = (*dest) + val;
-}
-
-static void aggregate_8bit(uint32_t * dest, uint32_t val)
-{
-    if ((((*dest) + val) < (*dest))
-        || ((*dest) + val) > 0xff)
-        (*dest) = 0xff;
-    else
-        (*dest) = (*dest) + val;
-}
-
-static void aggregate_16bit(uint32_t * dest, uint32_t val)
-{
-    if ((((*dest) + val) < (*dest))
-        || ((*dest) + val) > 0xffff)
-        (*dest) = 0xffff;
-    else
-        (*dest) = (*dest) + val;
-}
-
-static void aggregate_32bit(uint32_t * dest, uint32_t val)
-{
-    if (((*dest) + val) < (*dest))
-        (*dest) = 0xffffffff;
-    else
-        (*dest) = (*dest) + val;
 }
 
 // MAIN AGGREGATOR

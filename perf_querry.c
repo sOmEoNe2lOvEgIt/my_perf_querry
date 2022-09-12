@@ -133,13 +133,21 @@ int main(int ac, char **av)
     ib_portid_t portid;
 
     perf_count = malloc(sizeof(perf_data_t));
+    if (perf_count == NULL) {
+        printf("malloc");
+        return 1;
+    }
     if (ac > 1)
         ibd_ca = av[1];
-    if (resolve_self(ibd_ca, ibd_ca_port, &portid, &info.port) < 0)
+    if (resolve_self(ibd_ca, ibd_ca_port, &portid, &info.port) < 0) {
+        free(perf_count);
         return (42);
+    }
     srcport = mad_rpc_open_port(ibd_ca, ibd_ca_port, mgmt_classes, 3);
-    if (!srcport)
+    if (!srcport) {
+        free(perf_count);
         return (21);
+    }
     perf_count->portlocalphysicalerrors = 3600;
     dump_perfcounters(&portid, 1, perf_count);
     mad_rpc_close_port(srcport);

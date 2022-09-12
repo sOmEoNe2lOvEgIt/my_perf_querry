@@ -22,7 +22,7 @@ void dump_func(char *, int, void *, int))
                    srcport))
             printf("cannot query %s", name);
 
-        dump_func(buf, sizeof(buf), pc, sizeof(pc));
+        // dump_func(buf, sizeof(buf), pc, sizeof(pc));
 
         printf("# %s counters: %s port %d\n%s", name,
                portid2str(portid), port_num, buf);

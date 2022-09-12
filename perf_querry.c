@@ -105,7 +105,7 @@ static void get_err_query(perf_data_t *perf_count, ib_portid_t * portid, int por
     
     memset(pc, 0, sizeof(pc));
     if (!pma_query_via(pc, portid, port, ibd_timeout, IB_GSI_PORT_RCV_ERROR_DETAILS, srcport))
-        return (NULL);
+        return;
     mad_decode_field(pc, IB_PC_RCV_LOCAL_PHY_ERR_F, &val);
     aggregate_32bit(&perf_count->portlocalphysicalerrors, val);
     mad_decode_field(pc, IB_PC_RCV_MALFORMED_PKT_ERR_F, &val);
@@ -121,7 +121,7 @@ static void get_err_query(perf_data_t *perf_count, ib_portid_t * portid, int por
 
     if ((info.reset_only || info.reset) &&
     !performance_reset_via(pc, portid, info.port, mask, ibd_timeout, IB_GSI_PORT_RCV_ERROR_DETAILS, srcport))
-        return (NULL);
+        return;
 }
 
 // AGGREGATE TOOLS

@@ -58,8 +58,8 @@ static void aggregate_32bit(uint32_t * dest, uint32_t val)
 // 	int n, field;
 
 // 	for (field = start; field < end && bufsz > 0; field++) {
-// 		mad_decode_field(data, field, val);
-// 		if (!mad_dump_field(field, s, bufsz-1, val))
+// 		mad_decode_field(data, field = val;
+// 		if (!mad_dump_field(field, s, bufsz-1 = val)
 // 			return -1;
 // 		n = strlen(s);
 // 		s += n;
@@ -150,41 +150,41 @@ static void aggregate_perfcounters(perf_data_t *perf_count)
     mad_decode_field(pc, IB_PC_COUNTER_SELECT_F, &val);
     perf_count->counterselect = val;
     mad_decode_field(pc, IB_PC_ERR_SYM_F, &val);
-    aggregate_16bit(&perf_count->symbolerrors, val);
+    perf_count->symbolerrors = val
     mad_decode_field(pc, IB_PC_LINK_RECOVERS_F, &val);
-    aggregate_8bit(&perf_count->linkrecovers, val);
+    perf_count->linkrecovers = val;
     mad_decode_field(pc, IB_PC_LINK_DOWNED_F, &val);
-    aggregate_8bit(&perf_count->linkdowned, val);
+    perf_count->linkdowned = val;
     mad_decode_field(pc, IB_PC_ERR_RCV_F, &val);
-    aggregate_16bit(&perf_count->rcverrors, val);
+    perf_count->rcverrors = val;
     mad_decode_field(pc, IB_PC_ERR_PHYSRCV_F, &val);
-    aggregate_16bit(&perf_count->rcvremotephyerrors, val);
+    perf_count->rcvremotephyerrors = val;
     mad_decode_field(pc, IB_PC_ERR_SWITCH_REL_F, &val);
-    aggregate_16bit(&perf_count->rcvswrelayerrors, val);
+    perf_count->rcvswrelayerrors = val;
     mad_decode_field(pc, IB_PC_XMT_DISCARDS_F, &val);
-    aggregate_16bit(&perf_count->xmtdiscards, val);
+    perf_count->xmtdiscards = val;
     mad_decode_field(pc, IB_PC_ERR_XMTCONSTR_F, &val);
-    aggregate_8bit(&perf_count->xmtconstrainterrors, val);
+    perf_count->xmtconstrainterrors = val;
     mad_decode_field(pc, IB_PC_ERR_RCVCONSTR_F, &val);
-    aggregate_8bit(&perf_count->rcvconstrainterrors, val);
+    perf_count->rcvconstrainterrors = val;
     mad_decode_field(pc, IB_PC_ERR_LOCALINTEG_F, &val);
-    aggregate_4bit(&perf_count->linkintegrityerrors, val);
+    perf_count->linkintegrityerrors = val;
     mad_decode_field(pc, IB_PC_ERR_EXCESS_OVR_F, &val);
-    aggregate_4bit(&perf_count->excbufoverrunerrors, val);
+    perf_count->excbufoverrunerrors = val;
     mad_decode_field(pc, IB_PC_QP1_DROP_F, &val);
-    aggregate_16bit(&perf_count->qp1dropped, val);
+    perf_count->qp1dropped = val;
     mad_decode_field(pc, IB_PC_VL15_DROPPED_F, &val);
-    aggregate_16bit(&perf_count->vl15dropped, val);
+    perf_count->vl15dropped = val;
     mad_decode_field(pc, IB_PC_XMT_BYTES_F, &val);
-    aggregate_32bit(&perf_count->xmtdata, val);
+    perf_count->xmtdata = val;
     mad_decode_field(pc, IB_PC_RCV_BYTES_F, &val);
-    aggregate_32bit(&perf_count->rcvdata, val);
+    perf_count->rcvdata = val;
     mad_decode_field(pc, IB_PC_XMT_PKTS_F, &val);
-    aggregate_32bit(&perf_count->xmtpkts, val);
+    perf_count->xmtpkts = val;
     mad_decode_field(pc, IB_PC_RCV_PKTS_F, &val);
-    aggregate_32bit(&perf_count->rcvpkts, val);
+    perf_count->rcvpkts = val;
     mad_decode_field(pc, IB_PC_XMT_WAIT_F, &val);
-    aggregate_32bit(&perf_count->xmtwait, val);
+    perf_count->xmtwait = val;
 }
 
 static void aggregate_ext_perfcounters(perf_data_t *perf_count)
@@ -192,18 +192,17 @@ static void aggregate_ext_perfcounters(perf_data_t *perf_count)
     static u_int32_t val;
 
     mad_decode_field(pc, IB_PC_RCV_LOCAL_PHY_ERR_F, &val);
-    printf("RcvLocalPhyErrors: %u\n", val);
-    aggregate_32bit(&perf_count->portlocalphysicalerrors, val);
+    perf_count->portlocalphysicalerrors = val;
     mad_decode_field(pc, IB_PC_RCV_MALFORMED_PKT_ERR_F, &val);
-    aggregate_32bit(&perf_count->portmalformedpkterrors, val);
+    perf_count->portmalformedpkterrors = val;
     mad_decode_field(pc, IB_PC_RCV_BUF_OVR_ERR_F, &val);
-    aggregate_32bit(&perf_count->portbufferoverrunerrors, val);
+    perf_count->portbufferoverrunerrors = val;
     mad_decode_field(pc, IB_PC_RCV_DLID_MAP_ERR_F, &val);
-    aggregate_32bit(&perf_count->portdlidmappingerrors, val);
+    perf_count->portdlidmappingerrors = val;
     mad_decode_field(pc, IB_PC_RCV_VL_MAP_ERR_F, &val);
-    aggregate_32bit(&perf_count->portvlmappingerrors, val);
+    perf_count->portvlmappingerrors = val;
     mad_decode_field(pc, IB_PC_RCV_LOOPING_ERR_F, &val);
-    aggregate_32bit(&perf_count->portloopingerrors, val);
+    perf_count->portloopingerrors = val;
 }
 
 // DUMPER

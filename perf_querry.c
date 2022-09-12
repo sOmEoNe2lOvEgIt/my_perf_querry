@@ -10,6 +10,38 @@ uint ibd_timeout = 20;
 struct ibmad_port *srcport;
 struct info_s info;
 
+static void common_func(ib_portid_t * portid, int port_num, int mask,
+unsigned query, unsigned reset, const char *name, uint16_t attr,
+void dump_func(char *, int, void *, int))
+{
+    char buf[1536];
+
+    if (query) {
+        memset(pc, 0, sizeof(pc));
+        if (!pma_query_via(pc, portid, port_num, ibd_timeout, attr,
+                   srcport))
+            printf("cannot query %s", name);
+
+        dump_func(buf, sizeof(buf), pc, sizeof(pc));
+
+        printf("# %s counters: %s port %d\n%s", name,
+               portid2str(portid), port_num, buf);
+    }
+
+    memset(pc, 0, sizeof(pc));
+    if (reset && !performance_reset_via(pc, portid, info.port, mask,
+                        ibd_timeout, attr, srcport))
+        printf("cannot reset %s", name);
+}
+
+static void rcv_err_query(ib_portid_t * portid, int port, int mask)
+{
+    common_func(portid, port, mask, !info.reset_only,
+            (info.reset_only || info.reset), "PortRcvErrorDetails",
+            IB_GSI_PORT_RCV_ERROR_DETAILS,
+            mad_dump_perfcounters_rcv_err);
+}
+
 static int resolve_self(char *ca_name, uint8_t ca_port, ib_portid_t *portid,
 		 int *portnum, ibmad_gid_t *gid)
 {
@@ -31,7 +63,7 @@ static int resolve_self(char *ca_name, uint8_t ca_port, ib_portid_t *portid,
 	return (0);
 }
 
-void aggregate_4bit(uint32_t * dest, uint32_t val)
+static void aggregate_4bit(uint32_t * dest, uint32_t val)
 {
     if ((((*dest) + val) < (*dest)) || ((*dest) + val) > 0xf)
         (*dest) = 0xf;
@@ -39,7 +71,7 @@ void aggregate_4bit(uint32_t * dest, uint32_t val)
         (*dest) = (*dest) + val;
 }
 
-void aggregate_8bit(uint32_t * dest, uint32_t val)
+static void aggregate_8bit(uint32_t * dest, uint32_t val)
 {
     if ((((*dest) + val) < (*dest))
         || ((*dest) + val) > 0xff)
@@ -48,7 +80,7 @@ void aggregate_8bit(uint32_t * dest, uint32_t val)
         (*dest) = (*dest) + val;
 }
 
-void aggregate_16bit(uint32_t * dest, uint32_t val)
+static void aggregate_16bit(uint32_t * dest, uint32_t val)
 {
     if ((((*dest) + val) < (*dest))
         || ((*dest) + val) > 0xffff)
@@ -57,7 +89,7 @@ void aggregate_16bit(uint32_t * dest, uint32_t val)
         (*dest) = (*dest) + val;
 }
 
-void aggregate_32bit(uint32_t * dest, uint32_t val)
+static void aggregate_32bit(uint32_t * dest, uint32_t val)
 {
     if (((*dest) + val) < (*dest))
         (*dest) = 0xffffffff;
@@ -65,7 +97,7 @@ void aggregate_32bit(uint32_t * dest, uint32_t val)
         (*dest) = (*dest) + val;
 }
 
-void aggregate_64bit(uint64_t * dest, uint64_t val)
+static void aggregate_64bit(uint64_t * dest, uint64_t val)
 {
     if (((*dest) + val) < (*dest))
         (*dest) = 0xffffffffffffffffULL;
@@ -119,6 +151,13 @@ static void aggregate_perfcounters(perf_data_t *perf_count)
     aggregate_32bit(&perf_count->xmtwait, val);
 }
 
+static void rcv_err_query(ib_portid_t * portid, int port, int mask)
+{
+	common_func(portid, port, mask, !info.reset_only,
+		    (info.reset_only || info.reset), "PortRcvErrorDetails",
+		    IB_GSI_PORT_RCV_ERROR_DETAILS,
+		    mad_dump_perfcounters_rcv_err);
+}
 
 static void dump_perfcounters(int extended, int timeout, __be16 cap_mask, uint32_t cap_mask2,
 ib_portid_t * portid, int port, int aggregate, perf_data_t *perf_count)
@@ -149,6 +188,7 @@ int main(int ac, char **av)
     if (!srcport)
         return (21);
     dump_perfcounters(0, ibd_timeout, mask, 0, &portid, 1, 1, perf_count);
+    rcv_err_query(&portid, ibd_ca_port, mask);
     // printf("port: %u\nsymbolerrors: %u\nPortXmitDiscards: %u\nPortRcvPkts: %u\n\n",
     // perf_count->portselect, perf_count->symbolerrors, perf_count->xmtdiscards, perf_count->rcvpkts);
     mad_rpc_close_port(srcport);

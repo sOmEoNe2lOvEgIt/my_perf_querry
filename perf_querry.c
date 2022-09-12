@@ -23,7 +23,7 @@ static int _dump_fields(char *buf, int bufsz, void *data, int start, int end)
 
 	for (field = start; field < end && bufsz > 0; field++) {
 		mad_decode_field(data, field, val);
-		if (!_dump_fields(field, s, bufsz-1, val, end))
+		if (!mad_dump_field(field, s, bufsz-1, val))
 			return -1;
 		n = strlen(s);
 		s += n;

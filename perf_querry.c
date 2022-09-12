@@ -51,115 +51,93 @@ static void aggregate_32bit(uint32_t * dest, uint32_t val)
 // ERR_QUERRY
 //______________________________________________________________________________
 
-static int _dump_fields(char *buf, int bufsz, void *data, int start, int end)
-{
-	char val[64];
-	char *s = buf;
-	int n, field;
+// static int _dump_fields(char *buf, int bufsz, void *data, int start, int end)
+// {
+// 	char val[64];
+// 	char *s = buf;
+// 	int n, field;
 
-	for (field = start; field < end && bufsz > 0; field++) {
-		mad_decode_field(data, field, val);
-		if (!mad_dump_field(field, s, bufsz-1, val))
-			return -1;
-		n = strlen(s);
-		s += n;
-		*s++ = '\n';
-		*s = 0;
-		n++;
-		bufsz -= n;
-	}
-	return (int)(s - buf);
-}
+// 	for (field = start; field < end && bufsz > 0; field++) {
+// 		mad_decode_field(data, field, val);
+// 		if (!mad_dump_field(field, s, bufsz-1, val))
+// 			return -1;
+// 		n = strlen(s);
+// 		s += n;
+// 		*s++ = '\n';
+// 		*s = 0;
+// 		n++;
+// 		bufsz -= n;
+// 	}
+// 	return (int)(s - buf);
+// }
 
-static char *rcv_err_query(ib_portid_t * portid, int port, int mask)
-{
-    char buf[1536];
-    int cnt = 0;
+// static char *rcv_err_query(ib_portid_t * portid, int port, int mask)
+// {
+//     char buf[1536];
+//     int cnt = 0;
  
-    memset(pc, 0, sizeof(pc));
-    if (!pma_query_via(pc, portid, port, ibd_timeout, IB_GSI_PORT_RCV_ERROR_DETAILS, srcport))
-        return (NULL);
-    memset(pc, 0, sizeof(pc));
-    mad_dump_perfcounters_rcv_err(buf, sizeof(buf), pc, sizeof(pc));
-    cnt = _dump_fields(buf, sizeof(buf), pc, IB_PC_EXT_PORT_SELECT_F, IB_PC_EXT_XMT_BYTES_F);
-    if (cnt < 0)
-		return (NULL);
-    _dump_fields(buf + cnt, sizeof(buf) - cnt, pc, IB_PC_RCV_LOCAL_PHY_ERR_F, IB_PC_RCV_ERR_LAST_F);
-    if ((info.reset_only || info.reset) &&
-    !performance_reset_via(pc, portid, info.port, mask, ibd_timeout, IB_GSI_PORT_RCV_ERROR_DETAILS, srcport))
-        return (NULL);
-    return (strdup(buf));
-}
+//     memset(pc, 0, sizeof(pc));
+//     if (!pma_query_via(pc, portid, port, ibd_timeout, IB_GSI_PORT_RCV_ERROR_DETAILS, srcport))
+//         return (NULL);
+//     memset(pc, 0, sizeof(pc));
+//     mad_dump_perfcounters_rcv_err(buf, sizeof(buf), pc, sizeof(pc));
+//     cnt = _dump_fields(buf, sizeof(buf), pc, IB_PC_EXT_PORT_SELECT_F, IB_PC_EXT_XMT_BYTES_F);
+//     if (cnt < 0)
+// 		return (NULL);
+//     _dump_fields(buf + cnt, sizeof(buf) - cnt, pc, IB_PC_RCV_LOCAL_PHY_ERR_F, IB_PC_RCV_ERR_LAST_F);
+//     if ((info.reset_only || info.reset) &&
+//     !performance_reset_via(pc, portid, info.port, mask, ibd_timeout, IB_GSI_PORT_RCV_ERROR_DETAILS, srcport))
+//         return (NULL);
+//     return (strdup(buf));
+// }
 
-static void print_err(void)
-{
-    printf("err get_err_querry");
-}
+// static void print_err(void)
+// {
+//     printf("err get_err_querry");
+// }
 
-static void get_err_query(perf_data_t *perf_count, ib_portid_t * portid, int port, int mask)
-{
-    // char *buf = NULL;
-    // char *tmp = NULL;
+// static void get_err_query(perf_data_t *perf_count, ib_portid_t * portid, int port, int mask)
+// {
+//     char *buf = NULL;
+//     char *tmp = NULL;
  
-    // buf = rcv_err_query(portid, port, mask);
-    // if (buf == NULL)
-    //     return (print_err());
-    // tmp = buf;
-    // tmp = strstr(tmp, "PortLocalPhysicalErrors");
-    // if (tmp == NULL)
-    //     return (print_err());
-    // for (tmp += 25; tmp[0] == '.' && tmp[0] != 0; tmp++);
-    // perf_count->portlocalphysicalerrors = strtoul(tmp, NULL, 10);
-    // tmp = strstr(tmp, "PortMalformedPktErrors");
-    // if (tmp == NULL)
-    //     return (print_err());
-    // for (tmp += 25; tmp[0] == '.' && tmp[0] != 0; tmp++);
-    // perf_count->portmalformedpkterrors = strtoul(tmp, NULL, 10);
-    // tmp = strstr(tmp, "PortBufferOverrunErrors");
-    // if (tmp == NULL)
-    //     return (print_err());
-    // for (tmp += 25; tmp[0] == '.' && tmp[0] != 0; tmp++);
-    // perf_count->portbufferoverrunerrors = strtoul(tmp, NULL, 10);
-    // tmp = strstr(tmp, "PortDLIDMappingErrors");
-    // if (tmp == NULL)
-    //     return (print_err());
-    // for (tmp += 23; tmp[0] == '.' && tmp[0] != 0; tmp++);
-    // perf_count->portdlidmappingerrors = strtoul(tmp, NULL, 10);
-    // tmp = strstr(tmp, "PortVLMappingErrors");
-    // if (tmp == NULL)
-    //     return (print_err());
-    // for (tmp += 21; tmp[0] == '.' && tmp[0] != 0; tmp++);
-    // perf_count->portvlmappingerrors = strtoul(tmp, NULL, 10);
-    // tmp = strstr(tmp, "PortLoopingErrors");
-    // if (tmp == NULL)
-    //     return (print_err());
-    // for (tmp += 19; tmp[0] == '.' && tmp[0] != 0; tmp++);
-    // perf_count->portloopingerrors = strtoul(tmp, NULL, 10);
-    // if (buf != NULL)
-    //     free(buf);
-    static u_int32_t val;
-    
-    memset(pc, 0, sizeof(pc));
-    if (!pma_query_via(pc, portid, port, ibd_timeout, IB_GSI_PORT_RCV_ERROR_DETAILS, srcport))
-        return;
-    mad_decode_field(pc, IB_PC_RCV_LOCAL_PHY_ERR_F, &val);
-    aggregate_32bit(&perf_count->portlocalphysicalerrors, val);
-    mad_decode_field(pc, IB_PC_RCV_MALFORMED_PKT_ERR_F, &val);
-    aggregate_32bit(&perf_count->portmalformedpkterrors, val);
-    mad_decode_field(pc, IB_PC_RCV_BUF_OVR_ERR_F, &val);
-    aggregate_32bit(&perf_count->portbufferoverrunerrors, val);
-    mad_decode_field(pc, IB_PC_RCV_DLID_MAP_ERR_F, &val);
-    aggregate_32bit(&perf_count->portdlidmappingerrors, val);
-    mad_decode_field(pc, IB_PC_RCV_VL_MAP_ERR_F, &val);
-    aggregate_32bit(&perf_count->portvlmappingerrors, val);
-    mad_decode_field(pc, IB_PC_RCV_LOOPING_ERR_F, &val);
-    aggregate_32bit(&perf_count->portloopingerrors, val);
-
-    printf("querried\n");
-    if ((info.reset_only || info.reset) &&
-    !performance_reset_via(pc, portid, info.port, mask, ibd_timeout, IB_GSI_PORT_RCV_ERROR_DETAILS, srcport))
-        return;
-}
+//     buf = rcv_err_query(portid, port, mask);
+//     if (buf == NULL)
+//         return (print_err());
+//     tmp = buf;
+//     tmp = strstr(tmp, "PortLocalPhysicalErrors");
+//     if (tmp == NULL)
+//         return (print_err());
+//     for (tmp += 25; tmp[0] == '.' && tmp[0] != 0; tmp++);
+//     perf_count->portlocalphysicalerrors = strtoul(tmp, NULL, 10);
+//     tmp = strstr(tmp, "PortMalformedPktErrors");
+//     if (tmp == NULL)
+//         return (print_err());
+//     for (tmp += 25; tmp[0] == '.' && tmp[0] != 0; tmp++);
+//     perf_count->portmalformedpkterrors = strtoul(tmp, NULL, 10);
+//     tmp = strstr(tmp, "PortBufferOverrunErrors");
+//     if (tmp == NULL)
+//         return (print_err());
+//     for (tmp += 25; tmp[0] == '.' && tmp[0] != 0; tmp++);
+//     perf_count->portbufferoverrunerrors = strtoul(tmp, NULL, 10);
+//     tmp = strstr(tmp, "PortDLIDMappingErrors");
+//     if (tmp == NULL)
+//         return (print_err());
+//     for (tmp += 23; tmp[0] == '.' && tmp[0] != 0; tmp++);
+//     perf_count->portdlidmappingerrors = strtoul(tmp, NULL, 10);
+//     tmp = strstr(tmp, "PortVLMappingErrors");
+//     if (tmp == NULL)
+//         return (print_err());
+//     for (tmp += 21; tmp[0] == '.' && tmp[0] != 0; tmp++);
+//     perf_count->portvlmappingerrors = strtoul(tmp, NULL, 10);
+//     tmp = strstr(tmp, "PortLoopingErrors");
+//     if (tmp == NULL)
+//         return (print_err());
+//     for (tmp += 19; tmp[0] == '.' && tmp[0] != 0; tmp++);
+//     perf_count->portloopingerrors = strtoul(tmp, NULL, 10);
+//     if (buf != NULL)
+//         free(buf);
+// }
 
 // MAIN AGGREGATOR
 //______________________________________________________________________________
@@ -168,7 +146,6 @@ static void aggregate_perfcounters(perf_data_t *perf_count)
 {
     static uint32_t val;
 
-    mad_decode_field(pc, IB_PC_PORT_SELECT_F, &val);
     perf_count->portselect = val;
     mad_decode_field(pc, IB_PC_COUNTER_SELECT_F, &val);
     perf_count->counterselect = val;
@@ -210,6 +187,24 @@ static void aggregate_perfcounters(perf_data_t *perf_count)
     aggregate_32bit(&perf_count->xmtwait, val);
 }
 
+static void aggregate_ext_perfcounters(perf_count)
+{
+    static u_int32_t val;
+
+    mad_decode_field(pc, IB_PC_RCV_LOCAL_PHY_ERR_F, &val);
+    aggregate_32bit(&perf_count->portlocalphysicalerrors, val);
+    mad_decode_field(pc, IB_PC_RCV_MALFORMED_PKT_ERR_F, &val);
+    aggregate_32bit(&perf_count->portmalformedpkterrors, val);
+    mad_decode_field(pc, IB_PC_RCV_BUF_OVR_ERR_F, &val);
+    aggregate_32bit(&perf_count->portbufferoverrunerrors, val);
+    mad_decode_field(pc, IB_PC_RCV_DLID_MAP_ERR_F, &val);
+    aggregate_32bit(&perf_count->portdlidmappingerrors, val);
+    mad_decode_field(pc, IB_PC_RCV_VL_MAP_ERR_F, &val);
+    aggregate_32bit(&perf_count->portvlmappingerrors, val);
+    mad_decode_field(pc, IB_PC_RCV_LOOPING_ERR_F, &val);
+    aggregate_32bit(&perf_count->portloopingerrors, val);
+}
+
 // DUMPER
 //______________________________________________________________________________
 
@@ -222,6 +217,12 @@ ib_portid_t * portid, int port, int aggregate, perf_data_t *perf_count)
         return;
     }
 	aggregate_perfcounters(perf_count);
+    memset(pc, 0, sizeof(pc));
+    if (!pma_query_via(pc, portid, port, ibd_timeout, IB_GSI_PORT_RCV_ERROR_DETAILS, srcport)){
+		printf("extperfquery");
+        return;
+    }
+    aggregate_ext_perfcounters(perf_count);
 }
 
 // RESOLVE SELF
@@ -270,7 +271,7 @@ int main(int ac, char **av)
         return (21);
     perf_count->portlocalphysicalerrors = 3600;
     dump_perfcounters(0, ibd_timeout, mask, 0, &portid, 1, 1, perf_count);
-    get_err_query(perf_count ,&portid, ibd_ca_port, mask);
+    // get_err_query(perf_count ,&portid, ibd_ca_port, mask);
     mad_rpc_close_port(srcport);
     printf("port: %u\nportlocalphysicalerrors: %u\n",perf_count->portselect , perf_count->portlocalphysicalerrors);
     free (perf_count);

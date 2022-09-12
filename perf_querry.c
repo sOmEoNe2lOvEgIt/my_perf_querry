@@ -254,7 +254,6 @@ int main(int ac, char **av)
     int mask = 0xffff;
 
     perf_count = malloc(sizeof(perf_data_t));
-    perf_count->portselect = 3600;
     if (ac > 1)
         ibd_ca = av[1];
     if (resolve_self(ibd_ca, ibd_ca_port, &portid, &info.port, NULL) < 0)
@@ -262,6 +261,7 @@ int main(int ac, char **av)
     srcport = mad_rpc_open_port(ibd_ca, ibd_ca_port, mgmt_classes, 3);
     if (!srcport)
         return (21);
+    perf_count->portselect = 3600;
     dump_perfcounters(0, ibd_timeout, mask, 0, &portid, 1, 1, perf_count);
     // get_err_query(perf_count ,&portid, ibd_ca_port, mask);
     mad_rpc_close_port(srcport);

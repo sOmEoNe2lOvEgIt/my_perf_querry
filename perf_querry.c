@@ -49,7 +49,7 @@ static char *rcv_err_query(ib_portid_t * portid, int port, int mask)
     if (cnt < 0)
 		return (NULL);
     _dump_fields(buf + cnt, sizeof(buf) - cnt, pc, IB_PC_RCV_LOCAL_PHY_ERR_F, IB_PC_RCV_ERR_LAST_F);
-    printf("%s", buf);
+    // printf("%s", buf);
     if ((info.reset_only || info.reset) &&
     !performance_reset_via(pc, portid, info.port, mask, ibd_timeout, IB_GSI_PORT_RCV_ERROR_DETAILS, srcport))
         return (NULL);
@@ -67,6 +67,7 @@ static void get_err_query(perf_data_t *perf_count, ib_portid_t * portid, int por
     char *tmp = NULL;
  
     buf = rcv_err_query(portid, port, mask);
+    printf("%s", buf);
     if (buf == NULL) {
         printf("Error: rcv_err_query failed");
         return (print_err());

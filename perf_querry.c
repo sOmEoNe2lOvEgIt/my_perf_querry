@@ -72,6 +72,7 @@ static void get_err_query(perf_data_t *perf_count, ib_portid_t * portid, int por
         return (print_err());
     }
     tmp = strstr(tmp, "PortLocalPhysicalErrors:");
+    printf("found PortLocalPhysicalErrors");
     if (tmp == NULL)
         return (print_err());
     tmp += 25;
